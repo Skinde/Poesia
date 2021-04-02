@@ -1,2 +1,2 @@
 # Poesia
-Es un juego Rouge like 2D usando pygame.
+Its a 2D rouge like game

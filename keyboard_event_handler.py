@@ -25,7 +25,7 @@ class keys_handler:
     def __init__(self, game_ref):
         self.game_reference = game_ref
     def key_down_handle(self, key):
-        def phase2():
+        def phase3():
             if key in self.map_of_down_keys:
                 player = self.game_reference.actors["player"]
                 player.current_animation = self.map_of_down_keys[key]
@@ -37,7 +37,7 @@ class keys_handler:
         locals()["phase"+self.game_reference.phase]()
 
     def key_up_handle(self, key):
-        def phase2():
+        def phase3():
             if key in self.map_of_up_keys:
                 player = self.game_reference.actors["player"]
                 self.stack_of_last_pressed.remove(key)

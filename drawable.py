@@ -17,38 +17,31 @@ class object:
 
 class scenary(object):
     collidable = True
-    top_left_corner = None
-    top_wall = None
-    top_right_corner = None
-    right_wall = None
-    bottom_right_corner = None
-    bottom_wall = None
-    bottom_left_corner = None
-    left_wall = None
-    image_places = None 
     seed = 0
-    def load_image_into_surface(surface, surface_name, x, y):
+    def load_into_surface(surface_name, x, y):
         self.current_surface.blit(self.source_surface, (x,y), (self.image_places[surface_name][0], self.image_places[surface_name][1], self.image_places[surface_name][0] + self.width, self.image_places[surface_name][1] + self.height))
 
-    def __init__(self, image_places, width, height, source, seed):
+    def __init__(self, image_places, width, height, source, img_format, seed):
         self.source_surface = pygame.image.load(source + '.' + img_format).convert_alpha()
         self.width = width
         self.height = height
         self.image_places = image_places
-        self.top_left_corner = pygame.Surface((width, height))
-        self.top_wall = pygame.Surface((width, height))
-        self.top_right_corner = pygame.Surface((width,height))
-        self.right_wall = pygame.Surface((width, height))
-        self.bottom_right_corner = pygame.Surface((width, height))
-        self.bottom_wall = pygame.Surface((width, height))
-        self.bottom_left_corner = pygame.Surface((width, height))
-        self.left_wall = pygame.Surface((width, height))
+        #TODO:Read this from config?
+        self.current_surface = pygame.Surface((1920, 1080))
         random.seed(seed)
 
 
     def render_terrain(self, type, n_of_doors):
         def T1(self, door_configuration):
-            load_image_into_surface(self.top_left_corner, "top_left_corner", 0, 0)
+            room_width = random.randint(1,50)
+            room_height = random.randint(1,40)
+            load_into_surface("top_left_corner", 0, 0)
+            for i in range(room_width):
+                load_into_surface("top_wall", self.width*i,0)
+        locals()["T"+type]
+
+        
+            
             
 
             

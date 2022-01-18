@@ -1,8 +1,9 @@
 # Poesia
-To compile (and run) use:  
-python main.py  
-requirements:  
-pygame (pip install pygame)  
-python 3.9.2  
+Poesia is a library that makes using the Pygame library easier by removing tedious functions and adding new objects.
 
-Its a 2D rouge like game  
+To use simply import poesia into your main project file.
+
+requirements:  
+Pygame (pip install pygame)  
+Python 3.9.2  
+

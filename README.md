@@ -6,8 +6,9 @@ To use simply import poesia into your main project file.
 You can see an example game in the main.py file.
 
 
-requirements:  
+# Requirements
+Python 3.9.2
 Pygame (pip install pygame)  
 Pillow (pip install Pillow)
-Python 3.9.2  
+
 

@@ -1,13 +1,13 @@
 import poesia
 import pygame 
 
+#Defines the width and height of the window
 poesia.configuration.width = 900
 poesia.configuration.height = 800
 
 
-
+#This dictionaty defines the animation's starting [x,y,number_of_frames] in the Sprites/player.png image
 player_animations = {
-                #default animation is at x:0 y:64 and the number of frames is 1
                 "default": [0,64,1],
                 "walk_up": [0,512,9],
                 "walk_left": [0,576,9],
@@ -19,11 +19,13 @@ player_animations = {
                 "stop_right": [0,704,1]
             }
 
+#Create the new player
 Player = poesia.game.add_actor("Sprites/player.png", player_animations, 64, 64)
 Player.current_animation = "default"
 Player.animation_play = True
 
 
+#Define it's movement
 def move_player_right():
     if Player.speed_x < 1:
         Player.current_animation = "walk_right"
@@ -64,6 +66,7 @@ def stop_moving_player_down():
         Player.current_animation = "stop_down"
         Player.speed_y = 0
 
+#Map the key press to the function
 poesia.keyboard_handler.map_key_press(pygame.K_d, move_player_right)
 poesia.keyboard_handler.map_key_release(pygame.K_d, stop_moving_player_right)
 poesia.keyboard_handler.map_key_press(pygame.K_a, move_player_left)
@@ -74,5 +77,5 @@ poesia.keyboard_handler.map_key_press(pygame.K_s, move_player_down)
 poesia.keyboard_handler.map_key_release(pygame.K_s, stop_moving_player_down)
 
 
-
+#Ready, start the game!
 poesia.init()

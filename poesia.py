@@ -203,8 +203,8 @@ class actor:
         self.animation_stack.pop()
         if self.animation_stack:
             self.current_animation = self.animation_stack[-1]
-    def animation_stack_delete(self, animation_name):
-        self.animation_stack.append(animation_name)
+    def animation_stack_remove(self, animation_name):
+        self.animation_stack.remove(animation_name)
         if self.animation_stack:
             self.current_animation = self.animation_stack[-1]
         else:

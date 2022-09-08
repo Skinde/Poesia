@@ -1,12 +1,11 @@
 import poesia
 import pygame 
 
-#Defines the width and height of the window
 poesia.configuration.width = 900
 poesia.configuration.height = 800
 
 
-#This dictionaty defines the animation's starting [x,y,number_of_frames] in the Sprites/player.png image
+#Animation Map for the player stores: [X coordinate of first frame, Y coordinate of first frame, Number of frames]
 player_animations = {
                 "default": [0,64,1],
                 "walk_up": [0,512,9],
@@ -18,55 +17,54 @@ player_animations = {
                 "stop_down": [0,640,1],
                 "stop_right": [0,704,1]
             }
-
-#Create the new player
-Player = poesia.game.add_actor("Sprites/player.png", player_animations, 64, 64)
+        
+#Create the "Player Actor" Parameters are: (Path to sprite image, Animations Map, Width, Height, Animation speed In frames per second)
+Player = poesia.game.add_actor("Sprites/player.png" , player_animations, 64, 64, 10) 
 Player.current_animation = "default"
 Player.animation_play = True
 
 
-#Define it's movement
 def move_player_right():
-    if Player.speed_x < 1:
-        Player.current_animation = "walk_right"
-        Player.speed_x = 1
+        Player.animation_stack_append("walk_right")
+        Player.speed_x = 150
 
 def stop_moving_player_right():
-    if Player.speed_x > 0:
-        Player.current_animation = "stop_right"
+        Player.animation_stack_pop()
+        if not Player.animation_stack:
+            Player.current_animation = "stop_right"
         Player.speed_x = 0
 
 def move_player_left():
-    if Player.speed_x > -1:
-            Player.current_animation = "walk_left"
-            Player.speed_x = -1
+            Player.animation_stack_append("walk_left")
+            Player.speed_x = -150
 
 def stop_moving_player_left():
-    if Player.speed_x < 0:
+    Player.animation_stack_pop()
+    if not Player.animation_stack:
         Player.current_animation = "stop_left"
-        Player.speed_x = 0
+    Player.speed_x = 0
 
 def move_player_up():
-    if Player.speed_y > -1:
-        Player.current_animation = "walk_up"
-        Player.speed_y = -1
+    Player.animation_stack_append("walk_up")
+    Player.speed_y = -150
 
 def stop_moving_player_up():
-    if Player.speed_y < 0:
+    Player.animation_stack_pop()
+    if not Player.animation_stack:
         Player.current_animation = "stop_up"
-        Player.speed_y = 0
+    Player.speed_y = 0
 
 def move_player_down():
-    if Player.speed_y < 1:
-        Player.current_animation = "walk_down"
-        Player.speed_y = 1
+    Player.animation_stack_append("walk_down")
+    Player.speed_y = 150
 
 def stop_moving_player_down():
-    if Player.speed_y > 0:
+    Player.animation_stack_pop()
+    if not Player.animation_stack:
         Player.current_animation = "stop_down"
-        Player.speed_y = 0
+    Player.speed_y = 0
 
-#Map the key press to the function
+#Mapping of keypress to function, note that the key pressed can be a variable and changed later on with the same function.
 poesia.keyboard_handler.map_key_press(pygame.K_d, move_player_right)
 poesia.keyboard_handler.map_key_release(pygame.K_d, stop_moving_player_right)
 poesia.keyboard_handler.map_key_press(pygame.K_a, move_player_left)
@@ -77,5 +75,5 @@ poesia.keyboard_handler.map_key_press(pygame.K_s, move_player_down)
 poesia.keyboard_handler.map_key_release(pygame.K_s, stop_moving_player_down)
 
 
-#Ready, start the game!
+#Call this function to start the game
 poesia.init()

@@ -25,44 +25,44 @@ Player.animation_play = True
 
 
 def move_player_right():
-        Player.animation_stack_append("walk_right")
-        Player.speed_x = 150
+    Player.animation_stack_append("walk_right")
+    Player.speed_stack_x_append(150)
 
 def stop_moving_player_right():
-        Player.animation_stack_remove("walk_right")
-        if not Player.animation_stack:
-            Player.current_animation = "stop_right"
-        Player.speed_x = 0
+    Player.animation_stack_remove("walk_right")
+    if not Player.animation_stack:
+        Player.current_animation = "stop_right"
+    Player.speed_stack_x_remove(150)
 
 def move_player_left():
-            Player.animation_stack_append("walk_left")
-            Player.speed_x = -150
+    Player.animation_stack_append("walk_left")
+    Player.speed_stack_x_append(-150)
 
 def stop_moving_player_left():
     Player.animation_stack_remove("walk_left")
     if not Player.animation_stack:
         Player.current_animation = "stop_left"
-    Player.speed_x = 0
+    Player.speed_stack_x_remove(-150)
 
 def move_player_up():
     Player.animation_stack_append("walk_up")
-    Player.speed_y = -150
+    Player.speed_stack_y_append(-150)
 
 def stop_moving_player_up():
     Player.animation_stack_remove("walk_up")
     if not Player.animation_stack:
         Player.current_animation = "stop_up"
-    Player.speed_y = 0
+    Player.speed_stack_y_remove(-150)
 
 def move_player_down():
     Player.animation_stack_append("walk_down")
-    Player.speed_y = 150
+    Player.speed_stack_y_append(150)
 
 def stop_moving_player_down():
     Player.animation_stack_remove("walk_down")
     if not Player.animation_stack:
         Player.current_animation = "stop_down"
-    Player.speed_y = 0
+    Player.speed_stack_y_remove(150)
 
 #Mapping of keypress to function, note that the key pressed can be a variable and changed later on with the same function.
 poesia.keyboard_handler.map_key_press(pygame.K_d, move_player_right)

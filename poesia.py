@@ -165,6 +165,8 @@ class actor:
     animation_play = False
     animation_speed = 1 #fps the animation should play
     animation_stack = []
+    speed_stack_x = []
+    speed_stack_y = []
     current_animation = "default"
     current_frame = 0
     current_surface = None
@@ -203,12 +205,37 @@ class actor:
         self.animation_stack.pop()
         if self.animation_stack:
             self.current_animation = self.animation_stack[-1]
+        else:
+            self.current_animation = self.default_animation_name
+        
     def animation_stack_remove(self, animation_name):
         self.animation_stack.remove(animation_name)
         if self.animation_stack:
             self.current_animation = self.animation_stack[-1]
         else:
             self.current_animation = self.default_animation_name
+
+    def speed_stack_x_append(self, speed):
+        self.speed_stack_x.append(speed)
+        self.speed_x = speed
+
+    def speed_stack_x_remove(self, speed):
+        self.speed_stack_x.remove(speed)
+        if self.speed_stack_x:
+            self.speed_x = self.speed_stack_x[-1]
+        else:
+            self.speed_x = 0
+
+    def speed_stack_y_append(self, speed):
+        self.speed_stack_y.append(speed)
+        self.speed_y = speed
+
+    def speed_stack_y_remove(self, speed):
+        self.speed_stack_y.remove(speed)
+        if self.speed_stack_y:
+            self.speed_y = self.speed_stack_y[-1]
+        else:
+            self.speed_y = 0
 
     def update_maths(self, frame_duration_seconds): 
         self.relative_x_position = self.relative_x_position + self.speed_x*frame_duration_seconds

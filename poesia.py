@@ -100,8 +100,9 @@ class game:
     frames_per_second = 0
     frame_time = 0
     previous_time = 0
-
-   
+    accumulated_time = 0
+    frame_updates = 0
+    frame_time_over_one_second = 0 
     
     
     def __init__(self, ref_to_conf):
@@ -111,15 +112,21 @@ class game:
     def update_fps(self):
         self.current_time = time.time()
         self.frame_time = self.current_time - self.previous_time
+        self.accumulated_time = self.accumulated_time + self.frame_time
+        self.frame_updates = self.frame_updates + 1
         self.previous_time = self.current_time
         if self.frame_time != 0:
             self.frames_per_second = 1/self.frame_time
-        print(self.frames_per_second)
+        if self.accumulated_time > 1:
+            self.frame_time_over_one_second = self.accumulated_time/self.frame_updates
+            self.accumulated_time = 0
+            self.frame_updates = 0
+            print(1/self.frame_time_over_one_second)
         
 
     def update_graphics(self):
         for actor in self.actors:
-            actor.update_graphics(self.frame_time)
+            actor.update_graphics(self.frame_time_over_one_second)
 
 
     #Updates the game based on it's current phase

@@ -5,13 +5,10 @@ from datetime import datetime
 
 pygame.init()
 
-def foo():
-    return 0
-
 class config:
     width = 800
-    window = None
     height = 600
+    window = None
     is_running = True
     background = None
     framerate_limit = 0
@@ -109,22 +106,14 @@ class game:
         self.reference_to_conf = ref_to_conf
 
 
-    def update_fps(self):
+    def update_frame_time(self):
         self.current_time = time.time()
         self.frame_time = self.current_time - self.previous_time
-        self.accumulated_time = self.accumulated_time + self.frame_time
-        self.frame_updates = self.frame_updates + 1
         self.previous_time = self.current_time
-
-        if self.accumulated_time > 1:
-            self.frame_time_over_one_second = self.accumulated_time/self.frame_updates
-            self.accumulated_time = 0
-            self.frame_updates = 0
-        
 
     def update_graphics(self):
         for actor in self.actors:
-            actor.update_graphics(self.frame_time_over_one_second)
+            actor.update_graphics(self.frame_time)
 
 
     #Updates the game based on it's current phase
@@ -138,10 +127,11 @@ class game:
         for actor in self.actors:
             actor.load()
     def draw(self):
+        #TODO: sort by z position
+        #self.reference_to_conf.window.blit(self.back_scenary.current_surface,(0,0))
         for actor in self.actors:
-            #self.reference_to_conf.window.blit(self.back_scenary.current_surface,(0,0))
             self.reference_to_conf.window.blit(actor.current_surface,(actor.x_position, actor.y_position))
-            #self.reference_to_conf.window.blit(self.update_fps(), (10,0))
+
     def add_actor(self, *args):
         new_actor = actor(*args)
         self.actors.append(new_actor)
@@ -168,13 +158,11 @@ class actor:
     animation_stack = []
     speed_stack_x = []
     speed_stack_y = []
+    default_animation_name = "default"
     current_animation = "default"
     current_frame = 0
     current_surface = None
-    default_animation_name = "default"
-    frames_since_last_animation_update = 1
-    frames_to_wait_untill_update = 1
-    seconds_to_wait = 0
+    
     
     
     
@@ -287,7 +275,7 @@ def init():
         configuration.window.fill((0,0,0))
         game.update()
         game.update_graphics()
-        game.update_fps()
+        game.update_frame_time()
         game.draw()
         pygame.display.update()
 

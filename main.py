@@ -19,7 +19,7 @@ player_animations = {
             }
         
 #Create the "Player Actor" Parameters are: (Path to sprite image, Animations Map, Width, Height, Animation speed In frames per second)
-Player = poesia.game.add_actor("Sprites/player.png" , player_animations, 64, 64, 10) 
+Player = poesia.game.add_actor("Sprites/player.png" , player_animations, 64, 64, 30) 
 Player.current_animation = "default"
 Player.animation_play = True
 

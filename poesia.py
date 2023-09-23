@@ -62,7 +62,7 @@ class event_handler:
     #Define your functions here
 
     def shutdown(self, event):
-            self.reference_to_conf.is_running = False
+        self.reference_to_conf.is_running = False
     
     def keydown(self, event):
         self.keyboard_handler.handle_key_press(event.key)
@@ -81,7 +81,7 @@ class event_handler:
             self.mapped_events[event.type](self, event)
 
     def map_function(self, PygameEvent, Function):
-        mapped_events[PygameEvent] = Function
+        self.mapped_events[PygameEvent] = Function
 
 class game:
 
@@ -115,13 +115,11 @@ class game:
         self.accumulated_time = self.accumulated_time + self.frame_time
         self.frame_updates = self.frame_updates + 1
         self.previous_time = self.current_time
-        if self.frame_time != 0:
-            self.frames_per_second = 1/self.frame_time
+
         if self.accumulated_time > 1:
             self.frame_time_over_one_second = self.accumulated_time/self.frame_updates
             self.accumulated_time = 0
             self.frame_updates = 0
-            print(1/self.frame_time_over_one_second)
         
 
     def update_graphics(self):
@@ -142,7 +140,7 @@ class game:
     def draw(self):
         for actor in self.actors:
             #self.reference_to_conf.window.blit(self.back_scenary.current_surface,(0,0))
-            self.reference_to_conf.window.blit(actor.current_surface,(actor.relative_x_position, actor.relative_y_position))
+            self.reference_to_conf.window.blit(actor.current_surface,(actor.x_position, actor.y_position))
             #self.reference_to_conf.window.blit(self.update_fps(), (10,0))
     def add_actor(self, *args):
         new_actor = actor(*args)
@@ -154,13 +152,9 @@ class game:
 
 class actor:
 
-    #Camarea dependent values
-    relative_x_position = 0
-    relative_y_position = 0
-    relative_speed_x = 0
-    relative_speed_y = 0
-
     #Game Values
+    x_position = 0
+    y_position = 0
     speed_x = 0
     speed_y = 0
 
@@ -199,6 +193,8 @@ class actor:
         self.height = height
         self.animation_speed = animation_speed
         self.current_surface = pygame.Surface((self.width, self.height))
+        self.inverted_animation_speed = 1/self.animation_speed 
+        self.cumulated_time_since_last_update = 0
     
     def load(self):
         self.source_surface = pygame.image.load(self.source).convert_alpha()
@@ -245,15 +241,13 @@ class actor:
             self.speed_y = 0
 
     def update_maths(self, frame_duration_seconds): 
-        self.relative_x_position = self.relative_x_position + self.speed_x*frame_duration_seconds
-        self.relative_y_position = self.relative_y_position + self.speed_y*frame_duration_seconds
+        self.x_position = self.x_position + self.speed_x*frame_duration_seconds
+        self.y_position = self.y_position + self.speed_y*frame_duration_seconds
 
     def update_graphics(self, frame_duration_seconds):
         
-        if frame_duration_seconds != 0:
-            self.frames_to_wait_untill_update = 1/(frame_duration_seconds*self.animation_speed)
-
-        if self.animation_play and self.frames_to_wait_untill_update <= self.frames_since_last_animation_update:
+    
+        if self.animation_play and self.inverted_animation_speed <= self.cumulated_time_since_last_update:
             if self.current_frame >= self.animation_lines[self.current_animation][2]:
                 self.current_frame = 0
             self.current_surface.fill((0,0,0,0))
@@ -264,10 +258,9 @@ class actor:
                 self.animation_lines[self.current_animation][1]+self.height
             ))
             self.current_frame = self.current_frame + 1
-            self.frames_since_last_animation_update = 1
+            self.cumulated_time_since_last_update = 0
         else:
-            if self.frames_to_wait_untill_update > self.frames_since_last_animation_update:
-                self.frames_since_last_animation_update = self.frames_since_last_animation_update + 1
+            self.cumulated_time_since_last_update += frame_duration_seconds
 
 
 
@@ -287,7 +280,7 @@ def init():
     background = pygame.Surface((configuration.width, configuration.height))
     background.fill(pygame.Color('#000000'))    
     game.load()
-    print("Poesia 0.2 started")
+    print("Poesia 0.2.5 started")
     while configuration.is_running:
         for event in pygame.event.get():
             event_handler.handle(event)

@@ -9,6 +9,7 @@ pygame.init()
 SQUARE_ROOT_OF_TWO = 2**0.5
 SQUARE_ROOT_OF_THREE = 3**0.5
 
+
 class config:
     width = 800
     height = 600
@@ -19,15 +20,12 @@ class config:
 
 
 class camera:
-    #This is to make it easier on the user to
+    # This is to make it easier on the user to
     sorting_coordinate = "z-ordered"
-    coordinate_map = {
-        "x-ordered": 0,
-        "y-ordered": 1,
-        "z-ordered": 2
-    }
+    coordinate_map = {"x-ordered": 0, "y-ordered": 1, "z-ordered": 2}
 
     priority_dimension = 0
+
     def get_coordinate_priority(self):
         return self.coordinate_priority_map[self.order]
 
@@ -105,8 +103,7 @@ class game:
     back_scenary = None
 
     # Object Lists
-    background_objects = []
-    actors = []
+    scene_elements = []
     functions = []
 
     # Time Variables
@@ -124,46 +121,47 @@ class game:
         self.previous_time = self.current_time
 
     def update_graphics(self):
-        for actor in self.actors:
-            actor.update_graphics(self.frame_time)
+        for element in self.scene_elements:
+            if hasattr(element, "update_graphics") and callable(element.update_graphics):
+                element.update_graphics(self.frame_time)
 
     # Updates the game based on it's current phase
     def update(self):
         for function in self.functions:
             function()
-        for actor in self.actors:
-            actor.update_values(self.frame_time)
+        for element in self.scene_elements:
+            if hasattr(element, "update_values") and callable(element.update_values):
+                element.update_values(self.frame_time)
 
     def load(self):
-        for actor in self.actors:
-            actor.load()
+        for element in self.scene_elements:
+            element.load()
 
 
     def draw(self):
-        for background in self.background_objects:
+
+        self.scene_elements = sorted(self.scene_elements, key=lambda x : x.position_vector[self.reference_to_camera.coordinate_map[self.reference_to_camera.sorting_coordinate]])
+        for element in self.scene_elements:
             self.reference_to_conf.window.blit(
-                background.current_surface, (background.position_vector[0], background.position_vector[1])
-            )
-        sorted_actors = self.actors
-        for actor in sorted_actors:
-            self.reference_to_conf.window.blit(
-                actor.current_surface, (actor.position_vector[0], actor.position_vector[1])
+                element.current_surface,
+                (element.position_vector[0], element.position_vector[1]),
             )
 
     def add_actor(self, *args):
         new_actor = actor(*args)
-        self.actors.append(new_actor)
+        self.scene_elements.append(new_actor)
         return new_actor
 
     def add_background_object(self, *args):
         new_background_object = background_object(*args)
-        self.background_objects.append(new_background_object)
+        self.scene_elements.append(new_background_object)
         return new_background_object
 
-#Background objects can't interact, can't move, can't be controlled
+
+# Background objects can't interact, can't move, can't be controlled
 class background_object:
     # Game Values
-    position_vector = [0,0,0]
+    position_vector = [0, 0, 0]
 
     # Image Values
     width = 1
@@ -173,38 +171,41 @@ class background_object:
     current_surface = None
 
     def __init__(
-            self,
-            source=None,
-            width=1,
-            height=1,
-        ):
-            self.source = source
-            self.width = width
-            self.height = height
-            self.current_surface = pygame.image.load(self.source)
-        
+        self,
+        source=None,
+        width=1,
+        height=1,
+    ):
+        self.source = source
+        self.width = width
+        self.height = height
 
-#Stationary objects can interact, can't move, can't be controlled
+    def load(self):
+        self.current_surface = pygame.image.load(self.source)
+
+# Stationary objects can interact, can't move, can't be controlled
 class stationary_object:
-    position_vector = [0,0,0]
+    position_vector = [0, 0, 0]
 
-#Props can move interact, can move, can't be controlled
+
+# Props can move interact, can move, can't be controlled
 class prop:
     # Game Values
-    position_vector = [0,0,0]
-    speed_vector = [0,0,0]
-    
+    position_vector = [0, 0, 0]
+    speed_vector = [0, 0, 0]
+
     # Image Values
     width = 1
     height = 1
 
-#Actors can interact, can move, can be controlled
+
+# Actors can interact, can move, can be controlled
 class actor:
 
     # Game Values
-    position_vector = [0,0,0]
-    speed_vector = [0,0,0]
-    direction_vector = [0,0,0]
+    position_vector = [0, 0, 0]
+    speed_vector = [0, 0, 0]
+    direction_vector = [0, 0, 0]
     speed = 100
 
     # Image Values
@@ -252,15 +253,21 @@ class actor:
             ),
         )
 
-
     def update_values(self, frame_duration_seconds):
-        n = self.direction_vector.count(0)
-        n = 3 - n
-        v = (n == 0) * 0 + (n == 1) * self.speed + (n == 2) * (self.speed / SQUARE_ROOT_OF_TWO)
+        n = 3 - self.direction_vector.count(0)
+        v = (
+            (n == 0) * 0
+            + (n == 1) * self.speed
+            + (n == 2) * (self.speed / SQUARE_ROOT_OF_TWO)
+        )
         for dimension in range(len(self.speed_vector)):
             self.speed_vector[dimension] = v * self.direction_vector[dimension]
-        self.position_vector[0] = self.position_vector[0] + self.speed_vector[0] * frame_duration_seconds
-        self.position_vector[1] = self.position_vector[1] + self.speed_vector[1] * frame_duration_seconds
+        self.position_vector[0] = (
+            self.position_vector[0] + self.speed_vector[0] * frame_duration_seconds
+        )
+        self.position_vector[1] = (
+            self.position_vector[1] + self.speed_vector[1] * frame_duration_seconds
+        )
 
     def update_graphics(self, frame_duration_seconds):
 
@@ -271,7 +278,9 @@ class actor:
         ):
             if self.current_frame >= self.animation_lines[self.current_animation][2]:
                 self.current_frame = 0
-            self.current_surface = pygame.Surface([self.width,self.height], pygame.SRCALPHA, 32).convert_alpha()
+            self.current_surface = pygame.Surface(
+                [self.width, self.height], pygame.SRCALPHA, 32
+            ).convert_alpha()
             self.current_surface.blit(
                 self.source_surface,
                 (0, 0),

@@ -1,7 +1,7 @@
 # Poesia
 Poesia is a work-in-progress library that makes using the Pygame library easier by adding new features.
 
-#Usage
+# Usage
 Import poesia into your project folder. 
 
 You can see an example game in the example_game.py file.

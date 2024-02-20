@@ -23,7 +23,7 @@ Player = poesia.game.add_actor("Sprites/player.png", player_animations, 64, 64, 
 Player.current_animation = "default"
 Player.animation_play = True
 Player.speed = 150
-Player.position_vector = [0,0,1]
+Player.position_vector = [0, 0, 1]
 
 Bradd_pitt = poesia.game.add_background_object("Sprites/bradpitt.jpg", 200, 100)
 

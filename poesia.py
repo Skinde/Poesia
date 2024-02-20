@@ -7,7 +7,6 @@ from datetime import datetime
 pygame.init()
 
 SQUARE_ROOT_OF_TWO = 2**0.5
-SQUARE_ROOT_OF_THREE = 3**0.5
 
 
 class config:
@@ -15,7 +14,6 @@ class config:
     height = 600
     window = None
     is_running = True
-    background = None
     framerate_limit = 0
 
 
@@ -23,11 +21,6 @@ class camera:
     # This is to make it easier on the user to
     sorting_coordinate = "z-ordered"
     coordinate_map = {"x-ordered": 0, "y-ordered": 1, "z-ordered": 2}
-
-    priority_dimension = 0
-
-    def get_coordinate_priority(self):
-        return self.coordinate_priority_map[self.order]
 
 
 class keyboard_handler:
@@ -110,6 +103,7 @@ class game:
     current_time = 0
     frame_time = 0
     previous_time = 0
+    clock = pygame.time.Clock()
 
     def __init__(self, ref_to_conf, ref_to_camera):
         self.reference_to_conf = ref_to_conf
@@ -122,11 +116,15 @@ class game:
 
     def update_graphics(self):
         for element in self.scene_elements:
-            if hasattr(element, "update_graphics") and callable(element.update_graphics):
+            if hasattr(element, "update_graphics") and callable(
+                element.update_graphics
+            ):
                 element.update_graphics(self.frame_time)
 
     # Updates the game based on it's current phase
     def update(self):
+        if self.reference_to_conf.framerate_limit != 0:
+            self.clock.tick(self.reference_to_conf.framerate_limit)
         for function in self.functions:
             function()
         for element in self.scene_elements:
@@ -137,10 +135,16 @@ class game:
         for element in self.scene_elements:
             element.load()
 
-
     def draw(self):
 
-        self.scene_elements = sorted(self.scene_elements, key=lambda x : x.position_vector[self.reference_to_camera.coordinate_map[self.reference_to_camera.sorting_coordinate]])
+        self.scene_elements = sorted(
+            self.scene_elements,
+            key=lambda x: x.position_vector[
+                self.reference_to_camera.coordinate_map[
+                    self.reference_to_camera.sorting_coordinate
+                ]
+            ],
+        )
         for element in self.scene_elements:
             self.reference_to_conf.window.blit(
                 element.current_surface,
@@ -182,6 +186,7 @@ class background_object:
 
     def load(self):
         self.current_surface = pygame.image.load(self.source)
+
 
 # Stationary objects can interact, can't move, can't be controlled
 class stationary_object:
@@ -311,8 +316,6 @@ def init():
     configuration.window = pygame.display.set_mode(
         (configuration.width, configuration.height), pygame.RESIZABLE
     )
-    background = pygame.Surface((configuration.width, configuration.height))
-    background.fill(pygame.Color("#000000"))
     game.load()
     print("Poesia 0.2.5 started")
     while configuration.is_running:

@@ -1,15 +1,13 @@
 # Poesia
-Poesia is a work in progress library that makes using the Pygame library easier by removing tedious functions and adding new objects.
-To use it you must define the behavior of the game before starting the main loop.
+Poesia is a work-in-progress library that makes using the Pygame library easier by adding new features.
 
-simply import poesia into your main project file. 
+#Usage
+Import poesia into your project folder. 
 
-You can see an example game in the main.py file.
+You can see an example game in the example_game.py file.
 
 
 # Requirements
 - Python 3.9.2
-- Pygame (pip install pygame)  
+- Pygame (pip install pygame)
 - Pillow (pip install Pillow)
-
-

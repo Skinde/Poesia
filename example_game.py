@@ -51,51 +51,63 @@ def update_animation(last_direction):
 
 
 def move_player_right():
+    if Player.direction_vector[0] == -1:
+        stop_moving_player_left()
     last_direction = Player.direction_vector[:]
     Player.direction_vector[0] = 1
     update_animation(last_direction)
 
 
 def stop_moving_player_right():
-    last_direction = Player.direction_vector[:]
-    Player.direction_vector[0] = 0
-    update_animation(last_direction)
+    if Player.direction_vector[0] == 1:
+        last_direction = Player.direction_vector[:]
+        Player.direction_vector[0] = 0
+        update_animation(last_direction)
 
 
 def move_player_left():
+    if Player.direction_vector[0] == 1:
+        stop_moving_player_right()
     last_direction = Player.direction_vector[:]
     Player.direction_vector[0] = -1
     update_animation(last_direction)
 
 
 def stop_moving_player_left():
-    last_direction = Player.direction_vector[:]
-    Player.direction_vector[0] = 0
-    update_animation(last_direction)
+    if Player.direction_vector[0] == -1:
+        last_direction = Player.direction_vector[:]
+        Player.direction_vector[0] = 0
+        update_animation(last_direction)
 
 
 def move_player_up():
+    if Player.direction_vector[1] == 1:
+        stop_moving_player_down()
     last_direction = Player.direction_vector[:]
     Player.direction_vector[1] = -1
     update_animation(last_direction)
 
 
 def stop_moving_player_up():
-    last_direction = Player.direction_vector[:]
-    Player.direction_vector[1] = 0
-    update_animation(last_direction)
+    if Player.direction_vector[1] == -1:
+        last_direction = Player.direction_vector[:]
+        Player.direction_vector[1] = 0
+        update_animation(last_direction)
 
 
 def move_player_down():
+    if Player.direction_vector[1] == -1:
+        stop_moving_player_up()
     last_direction = Player.direction_vector[:]
     Player.direction_vector[1] = 1
     update_animation(last_direction)
 
 
 def stop_moving_player_down():
-    last_direction = Player.direction_vector[:]
-    Player.direction_vector[1] = 0
-    update_animation(last_direction)
+    if Player.direction_vector[1] == 1:
+        last_direction = Player.direction_vector[:]
+        Player.direction_vector[1] = 0
+        update_animation(last_direction)
 
 
 # Mapping of keypress to function, note that the key pressed can be a variable and changed later on with the same function.
